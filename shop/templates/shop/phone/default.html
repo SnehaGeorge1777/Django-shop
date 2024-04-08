@@ -1,0 +1,43 @@
+{% load i18n %}
+
+{% include "shop/djng-form.html" %}
+
+{% if customer.is_authenticated %}
+<div class="card">
+	<div class="card-header">
+	{% block form-title %}Change Phone Number{% endblock %}
+	</div>
+
+	<div class="card-body">
+	{% block form-content %}
+		<form name="{{ form_name }}" djng-endpoint="{% url 'shop:change-phone-number' %}" role="form" novalidate>
+			{% spaceless %}
+				<div class="form-group has-feedback">
+					<label for="phone_number">{% trans "Phone Number" %}</label>
+					<div class="input-group">
+						<div class="input-group-prepend"><i class="input-group-text fa fa-phone"></i></div>
+						<input type="text" class="form-control" name="phone_number" ng-model="form_data.phone_number" placeholder="Phone Number" ng-required="true" />
+					</div>
+{#					<ul ng-show="{{ form_name }}.phone_number.$touched" class="djng-form-control-feedback djng-field-errors" ng-cloak>#}
+{#						<li ng-show="{{ form_name }}.phone_number.$error.required" class="invalid">{% trans "This field is required." %}</li>#}
+{#						<li ng-show="{{ form_name }}.phone_number.$valid" class="valid"></li>#}
+{#					</ul>#}
+{#					<ul ng-show="{{ form_name }}.phone_number.$error.rejected && {{ form_name }}.phone_number.$pristine" class="shop-form-error" ng-cloak>#}
+{#						<li ng-bind="{{ form_name }}.phone_number.$message"></li>#}
+{#					</ul>#}
+				</div>
+
+				<div class="form-group">
+					<button type="button" class="btn btn-primary" ng-click="do(disable()).then(create()).then(showOK()).then(delay(3500)).then(reloadPage()).catch(showFail()).then(delay(3500)).finally(restore())">
+						{% trans 'Submit' %}
+						<i class="fa fa-save" aria-hidden="true"></i>
+					</button>
+				</div>
+			{% endspaceless %}
+		</form>
+	{% endblock form-content %}
+	</div>
+</div>
+{% else %}
+<div class="alert alert-danger" role="alert">{% trans "This form shall only be reachable by authenticated users" %}</div>
+{% endif %}
