@@ -38,7 +38,7 @@ shop_watch_list_url %}{% endif %}
 						<div ng-bind="cart_item.unit_price"></div>
 						<div class="px-1">&times;</div>
 						<input type="number" class="form-control" ng-model="cart_item.quantity"
-							ng-model-options="{{ EDITCART_NG_MODEL_OPTIONS }}" ng-change="updateCartItem(cart_item)" />
+							ng-model-options="{{ EDITCART_NG_MODEL_OPTIONS }}" ng-change="updateCartItem(cart_item)"min="0" />
 
 						<div ng-bind="cart_item.line_total"></div>
 					</div>
