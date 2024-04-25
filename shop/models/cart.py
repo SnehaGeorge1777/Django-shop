@@ -30,7 +30,7 @@ class CartItemManager(models.Manager):
         # add a new item to the cart, or reuse an existing one, increasing the quantity
         watched = not quantity
         cart_item = product.is_in_cart(cart, watched=watched, **kwargs)
-        if False:
+        if cart_item: #Task 1.2 is completed
             if not watched:
                 cart_item.quantity += quantity
             created = False
