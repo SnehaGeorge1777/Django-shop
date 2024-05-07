@@ -17,7 +17,7 @@
 <li uib-dropdown class="nav-item dropdown {{ item_class }}"{% if customer.is_anonymous %} auto-close="outsideClick"{% endif %}>
 	<a uib-dropdown-toggle class="nav-link dropdown-toggle" role="button" aria-haspopup="true">
 	{% if customer.is_authenticated %}
-		<i class="fa fa-user"></i>&nbsp;{{ customer.first_name|default_if_none:""|escape }}
+		<i class="fa fa-user"></i>&nbsp;{{ customer.first_name|default_if_none:""|escape }} <!-- Task 2.1 is completed (FIX FOR XSS ATTACK) -->
 	{% else %}
 		<i class="fa fa-sign-in"></i>&nbsp;{% trans "Sign in" %}
 	{% endif %}
