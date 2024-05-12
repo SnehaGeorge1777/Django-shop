@@ -308,8 +308,8 @@ LOGGING = {
 
 SILENCED_SYSTEM_CHECKS = ['auth.W004']
 
-CSRF_COOKIE_SECURE = False
-
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 FIXTURE_DIRS = [
     os.path.join(WORK_DIR, 'fixtures'),
 ]
