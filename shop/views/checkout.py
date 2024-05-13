@@ -104,7 +104,8 @@ class CheckoutViewSet(GenericViewSet):
         }
         return Response(data=response_data)
 
-    @action(methods=['post', 'get'], detail=False, url_path='purchase')
+    # task 3 csrf fix 
+    @action(methods=['post'], detail=False, url_path='purchase')
     def purchase(self, request):
         """
         This is the final step on converting a cart into an order object. It normally is used in
