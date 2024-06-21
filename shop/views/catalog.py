@@ -26,7 +26,8 @@ from shop.rest.money import JSONRenderer
 from shop.rest.renderers import ShopTemplateHTMLRenderer, CMSPageRenderer
 from shop.serializers.bases import ProductSerializer
 from shop.serializers.defaults.catalog import AddToCartSerializer
-
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
+from django.utils.decorators import method_decorator
 
 class ProductListPagination(pagination.LimitOffsetPagination):
     """
@@ -183,7 +184,9 @@ class SyncCatalogView(views.APIView):
         context = self.get_context(request, **kwargs)
         serializer = self.serializer_class(context=context, **kwargs)
         return Response(serializer.data)
-
+    
+    @method_decorator(ensure_csrf_cookie)
+    @method_decorator(csrf_protect)
     def post(self, request, *args, **kwargs):
         context = self.get_context(request, **kwargs)
         serializer = self.serializer_class(data=request.data, context=context)
@@ -215,7 +218,9 @@ class AddToCartView(views.APIView):
         context = self.get_context(request, **kwargs)
         serializer = self.serializer_class(context=context, **kwargs)
         return Response(serializer.data)
-
+    
+    @method_decorator(ensure_csrf_cookie)
+    @method_decorator(csrf_protect)
     def post(self, request, *args, **kwargs):
         context = self.get_context(request, **kwargs)
         serializer = self.serializer_class(data=request.data, context=context)

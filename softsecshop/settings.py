@@ -20,6 +20,7 @@ from cmsplugin_cascade.extra_fields.config import PluginExtraFieldsConfig
 SHOP_APP_LABEL = 'softsecshop'
 BASE_DIR = os.path.dirname(__file__)
 
+
 # Root directory for this django project
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, os.path.pardir))
 
@@ -40,6 +41,7 @@ SECRET_KEY = os.environ.get(
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+
 
 SITE_ID = 1
 
@@ -117,10 +119,12 @@ INSTALLED_APPS = [
     'post_office',
     'shop',
     'softsecshop',
+    'sslserver',
 ]
 
 MIDDLEWARE = [
     # 'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -172,12 +176,12 @@ MEDIA_URL = '/media/'
 
 # Absolute path to the directory that holds static files.
 # Example: "/home/media/media.lawrence.com/static/"
+#STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_ROOT = os.getenv('DJANGO_STATIC_ROOT', os.path.join(WORK_DIR, 'static'))
-
+#MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(WORK_DIR, 'media')
 # URL that handles the static files served from STATIC_ROOT.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
-
 STATICFILES_FINDERS = [
     # or 'django.contrib.staticfiles.finders.FileSystemFinder',
     'softsecshop.finders.FileSystemFinder',
@@ -188,6 +192,7 @@ STATICFILES_FINDERS = [
 ]
 
 STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
     ('node_modules', os.path.join(PROJECT_ROOT, 'node_modules')),
 ]
 
@@ -233,8 +238,18 @@ POST_OFFICE = {
     'TEMPLATE_ENGINE': 'post_office',
 }
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+SSL_CERTIFICATE = "D:/phase-3-work/127.0.0.1+1.pem"
+SSL_KEY = "D:/phase-3-work/127.0.0.1+1-key.pem"
+STATIC_URL = '/static/'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_HSTS_SECONDS = 31536000  # One year in seconds
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
@@ -307,7 +322,7 @@ LOGGING = {
 }
 
 SILENCED_SYSTEM_CHECKS = ['auth.W004']
-
+SECURE_SSL_REDIRECT = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True # CSRF TOKEN AND SESSION ID IS NOT VISIBLE AFTER FIX(TASK 2.5 FIX DONE)
 FIXTURE_DIRS = [

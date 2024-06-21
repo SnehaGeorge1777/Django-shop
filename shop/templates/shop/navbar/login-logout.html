@@ -26,6 +26,7 @@
 	{% if customer.is_authenticated %}
 		<div class="px-3 py-0" role="dialog" aria-label="logout">
 			<form name="logout_form" djng-endpoint="{% url 'shop:logout' %}" role="form">
+				{% csrf_token %}
 				<button class="btn btn-primary btn-block btn-sm" type="button" ng-click="do(create()).then(reloadPage())">
 				{% trans "Logout" %}
 				&emsp;<i class="fa fa-sign-out"></i>
@@ -52,6 +53,7 @@
 	{% else %}
 		<div class="px-3 py-0" role="dialog" aria-label="login">
 			<form name="login_form" djng-endpoint="{% url 'shop:login' %}" accept-charset="UTF-8" role="form">
+				{% csrf_token %}
 				<div class="alert alert-danger" ng-show="rejectMessageIsVisible()" ng-cloak>
 					<a class="close" ng-click="dismissSubmitMessage()">×</a>
 					<p ng-bind="getSubmitMessage()"></p>

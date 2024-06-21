@@ -20,15 +20,18 @@ from shop.models.customer import CustomerModel
 from shop.rest.renderers import CMSPageRenderer
 from shop.serializers.auth import PasswordResetRequestSerializer, PasswordResetConfirmSerializer
 from shop.signals import email_queued
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
+from django.utils.decorators import method_decorator
 
-
+# Added Csrf tokens to all POST requests ---  Task 3.2.3
 class AuthFormsView(GenericAPIView):
     """
     Generic view to handle authentication related forms such as user registration
     """
     serializer_class = None
     form_class = None
-
+    @method_decorator(ensure_csrf_cookie)
+    @method_decorator(csrf_protect)
     def post(self, request, *args, **kwargs):
         if request.customer.is_visitor:
             customer = CustomerModel.objects.get_or_create_from_request(request)
@@ -76,6 +79,8 @@ class LoginView(OriginalLoginView):
             if previous_user.customer.orders.count() == 0:
                 previous_user.delete()
 
+    @method_decorator(ensure_csrf_cookie)
+    @method_decorator(csrf_protect)
     def post(self, request, *args, **kwargs):
         self.request = request
         if request.user.is_anonymous:
@@ -114,6 +119,8 @@ class LogoutView(APIView):
 class PasswordChangeView(OriginalPasswordChangeView):
     form_name = 'password_change_form'
 
+    @method_decorator(ensure_csrf_cookie)
+    @method_decorator(csrf_protect)
     def post(self, request, *args, **kwargs):
         form_data = request.data.get('form_data', {})
         serializer = self.get_serializer(data=form_data)
@@ -137,6 +144,8 @@ class PasswordResetRequestView(GenericAPIView):
     permission_classes = (AllowAny,)
     form_name = 'password_reset_request_form'
 
+    @method_decorator(ensure_csrf_cookie)
+    @method_decorator(csrf_protect)
     def post(self, request, *args, **kwargs):
         form_data = request.data.get('form_data', {})
         serializer = self.get_serializer(data=form_data)
@@ -182,7 +191,9 @@ class PasswordResetConfirmView(GenericAPIView):
             'user_name': force_str(serializer.user),
             'form_name': 'password_reset_form',
         })
-
+    
+    @method_decorator(ensure_csrf_cookie)
+    @method_decorator(csrf_protect)
     def post(self, request, uidb64=None, token=None):
         try:
             data = dict(request.data['form_data'], uid=uidb64, token=token)

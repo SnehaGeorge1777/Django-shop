@@ -15,6 +15,8 @@ from shop.models.cart import CartModel
 from shop.serializers.checkout import CheckoutSerializer
 from shop.serializers.cart import CartSerializer
 from shop.modifiers.pool import cart_modifiers_pool
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
+from django.utils.decorators import method_decorator
 
 
 class CheckoutViewSet(GenericViewSet):
@@ -105,7 +107,9 @@ class CheckoutViewSet(GenericViewSet):
         return Response(data=response_data)
 
     # task 3 csrf fix 
-    @action(methods=['post'], detail=False, url_path='purchase')
+    @method_decorator(ensure_csrf_cookie)
+    @method_decorator(csrf_protect)
+    @action(methods=['post'], detail=False, url_path='purchase')  # Phase-3 Task 3.2.3
     def purchase(self, request):
         """
         This is the final step on converting a cart into an order object. It normally is used in
