@@ -16,7 +16,7 @@ from shop.conf import app_settings
 from shop.forms.base import UniqueEmailValidationMixin
 from shop.models.customer import CustomerModel
 from shop.signals import email_queued
-
+import re
 
 class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValidationMixin, Bootstrap3ModelForm):
     form_name = 'register_user_form'
@@ -164,3 +164,31 @@ class PasswordResetRequestForm(PasswordResetForm):
             context['uid'] = context['uid'].decode('utf-8')
             post_office_mail.send(to_email, template=email_template, context=context, render_on_delivery=True)
         email_queued()
+
+
+#Task 3.2.1: Password Strength, Done by Ajay and Sneha
+class CustomStrongPasswordValidator:
+
+    def validate(self, password, user=None):
+        if not re.search(r'[A-Z]', password):
+            raise ValidationError(_("Password must contain at least one uppercase letter."))
+        if not re.search(r'[a-z]', password):
+            raise ValidationError(_("Password must contain at least one lowercase letter."))
+        if not re.search(r'[0-9]', password):
+            raise ValidationError(_("Password must contain at least one digit."))
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+            raise ValidationError(_("Password must contain at least one special character."))
+        if self.has_ordered_sequence(password):
+            raise ValidationError(_("Password should not contain sequences of three or more characters or numbers in order"))
+        
+    def get_help_text(self):
+        return _(" ")
+    
+    def has_ordered_sequence(self, s):
+        # Check for sequences of three or more characters in order
+        for i in range(len(s) - 2):
+            if ord(s[i]) + 1 == ord(s[i + 1]) and ord(s[i + 1]) + 1 == ord(s[i + 2]):
+                return True
+            if ord(s[i]) - 1 == ord(s[i + 1]) and ord(s[i + 1]) - 1 == ord(s[i + 2]):
+                return True
+        return False

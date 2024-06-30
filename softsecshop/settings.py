@@ -62,12 +62,27 @@ USE_THOUSAND_SEPARATOR = True
 # allowing to login via email address
 AUTH_USER_MODEL = 'email_auth.User'
 
+#Task 3.2.1: Password Strength, Done by Ajay and Sneha 
 AUTH_PASSWORD_VALIDATORS = [{
     'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     'OPTIONS': {
-        'min_length': 6,
+        'min_length': 8,
     }
-}]
+},
+{
+    'NAME': 'shop.forms.auth.CustomStrongPasswordValidator'
+},
+{
+    'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'
+},
+{
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'OPTIONS': {
+            'user_attributes': ('username', 'first_name', 'last_name', 'email'),  # Default attributes
+            'max_similarity': 0.7,  # Default similarity threshold
+        }
+    },
+]
 
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.UnsaltedMD5PasswordHasher",
