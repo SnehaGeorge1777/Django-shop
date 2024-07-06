@@ -68,12 +68,18 @@ class RegisterUserForm(NgModelFormMixin, NgFormValidationMixin, UniqueEmailValid
         cleaned_data = super().clean()
         password1 = cleaned_data.get('password1')
         password2 = cleaned_data.get('password2') # Task 1.1 is completed
+        email = cleaned_data.get('email')
         if password1 and password2:
             if password1 != password2:
                 raise ValidationError(
                     self.error_messages['password_mismatch'],
                     code='password_mismatch',
                 )
+            custom_validator = CustomStrongPasswordValidator()
+            custom_validator.validate(password2, user=None)
+            if custom_validator.is_similar_to_email(password2, email):
+                raise ValidationError(_("Password must not be similar to the email address."))
+                
         password_validation.validate_password(password2)
         return cleaned_data
 
@@ -191,4 +197,22 @@ class CustomStrongPasswordValidator:
                 return True
             if ord(s[i]) - 1 == ord(s[i + 1]) and ord(s[i + 1]) - 1 == ord(s[i + 2]):
                 return True
+        return False
+        
+    def is_similar_to_email(self, password, email):
+        
+        if email is None:
+            return False
+        email = email.lower()
+        password = password.lower()
+
+        local_part, domain_part = email.split('@', 1)
+
+        if local_part in password:
+            return True
+
+        domain_main_part = domain_part.split('.')[0]
+        if domain_main_part in password:
+            return True
+
         return False
