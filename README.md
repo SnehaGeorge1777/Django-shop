@@ -10,7 +10,8 @@ This project is generated as an implementation of [Django-Shop](https://django-s
 ## Setup
 ```bash
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate  # for Linux, MacOS only
+.\venv\Scripts\activate  # for Windows only
 
 pip install -r requirements.txt
 npm install
